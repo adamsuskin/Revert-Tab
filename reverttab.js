@@ -1,17 +1,35 @@
 //Author: Adam Suskin
 //License: MIT
 
-last_url = 0;
-this_url = 0;
-
+var last_id;
+var this_id;
+var tmp_id;
 
 function set_id_to_current(tab) {
-	this_url = tab.id;
+	this_id = tab.id;
+}
+
+function check_equal(tab) {
+	return chr
 }
 
 function update_id() {
-	last_url = this_url;
-	chrome.tabs.getSelected(set_id_to_current);
+	last_id = this_id;
+	chrome.tabs.query({active: true,
+							 lastFocusedWindow: true},
+							 function(tabs) {
+			this_id = tabs[0].id;
+	});
+}
+
+function revert_tab() {
+	chrome.tabs.query({active: true,
+							 lastFocusedWindow: true},
+							 function(tabs) {
+			tmp_id = tabs[0].id;
+	});
+	if(tmp_id == this_id)
+		chrome.tabs.update(last_id, {selected: true});
 }
 
 chrome.tabs.onActiveChanged.addListener(function(){
@@ -19,5 +37,5 @@ chrome.tabs.onActiveChanged.addListener(function(){
 });
 
 chrome.tabs.onRemoved.addListener(function(){
-	chrome.tabs.update(last_url, {selected: true});
+	revert_tab();
 });
